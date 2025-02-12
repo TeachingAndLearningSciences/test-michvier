@@ -1,0 +1,98 @@
+name: GitHub Classroom Workflow
+
+on:
+  push:
+    paths:
+      - '*.py'
+  workflow_dispatch:
+
+permissions:
+  checks: write
+  actions: write
+  contents: write
+
+jobs:
+  build:
+    name: Autograding
+    permissions: write-all
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: education/autograding@v1
+      - name: Setup
+        run:
+          pip install parameterized
+      - name: Generate Feedback
+        id: full
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "report<<EOF" >> $GITHUB_OUTPUT
+          echo "$(cd .test ; python -m unittest task_test.py ; cd ..)" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      - name: Extract Report
+        id: report
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "report<<EOF" >> $GITHUB_OUTPUT
+          out=$''
+          while IFS= read -r line ; do
+              if [[ $line != id* ]] && [[ $line != points_total* ]]
+              then
+                  out+="$line"
+                  out+=$'\n'
+              fi
+          done <<< "${{ steps.full.outputs.report }}"
+          echo "$out" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      - name: Extract Points
+        id: points
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "report<<EOF" >> $GITHUB_OUTPUT
+          while IFS= read -r line ; do
+              if [[ $line == points_total* ]]
+              then
+                  points=$(echo "$line" | cut -d ":" -f 2)
+                  echo "$points" | cut -d "." -f 1 >> $GITHUB_OUTPUT
+              fi
+          done <<< "${{ steps.full.outputs.report }}"
+          echo "EOF" >> $GITHUB_OUTPUT
+      - name: Create comment
+        uses: peter-evans/commit-comment@v3
+        with:
+          body: |
+            # Console Output
+            
+            ${{ steps.report.outputs.report }}
+
+            Total Points: ${{ steps.points.outputs.report }}
+      - name: Set Score
+        uses: markpatterson27/autograding@dev-points-input-release
+        with:
+          points: ${{ steps.points.outputs.report }}
+          available-points: 30
+      - name: Generate filepath
+        id: filepath
+        run: |
+          repo="$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)"
+          name="$(echo $repo | cut -d'-' -f3)"
+          ass_id1="$(echo $repo | cut -d'-' -f1)"
+          ass_id2="$(echo $repo | cut -d'-' -f2)"
+          FULL="$(echo $ass_id2-$ass_id1/$name)"
+          echo "report<<EOF" >> $GITHUB_OUTPUT
+          echo "${FULL}/${GITHUB_RUN_NUMBER}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      - name: Push analytics file
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.PAT }}
+        with:
+          source_file: '.test/analytics.csv'
+          destination_repo: 'WIN-SE-PythonCourse/analytics'
+          destination_folder: ${{ steps.filepath.outputs.report }}
+          user_email: 'example@email.com'
+          user_name: 'staffbot'

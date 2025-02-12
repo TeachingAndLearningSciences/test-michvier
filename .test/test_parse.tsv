@@ -1,0 +1,20 @@
+test_name	id	class_name	method_name	value	msg_on_success	msg_on_failure	competence	earnable_points	total_points
+test_declare_a	a1_2	task2	main	a =		Test failed, the variable 'a' was not declared		0.5	5
+test_assign_a	a1_2	task2	main	a = 7		Test failed, the variable 'a' was not assigned the correct value (7)		0.5	5
+test_declare_b	a1_2	task2	main	b =		Test failed, the variable 'b' was not declared		0.5	5
+test_assign_b	a1_2	task2	main	b = 9.2		Test failed, the variable 'b' was not assigned the correct value (9.2)		0.5	5
+test_declare_c	a1_2	task2	main	c =		Test failed, the variable 'c' was not declared		0.5	5
+test_assign_c	a1_2	task2	main	c = 'c'		Test failed, the variable 'c' was not assigned the correct value (c)		0.5	5
+test_declare_d	a1_2	task2	main	d =		Test failed, the variable 'd' was not declared		0.5	5
+test_assign_d	a1_2	task2	main	d = 'Hi'		Test failed, the variable 'd' was not assigned the correct value (Hi)		0.5	5
+test_declare_price	a1_3	task3	main	price =		Test failed, the variable 'price' was not declared		2	6
+test_declare_amount	a1_3	task3	main	amount =		Test failed, the variable 'amount' was not declared		2	6
+test_declare_discount	a1_3	task3	main	discount =		Test failed, the variable 'discount' was not declared		2	6
+test_declare_base_pay	a1_4	task4	main	base_pay =		Test failed, the variable 'base_pay' was not declared		2	6
+test_declare_premium	a1_4	task4	main	premium =		Test failed, the variable 'premium' was not declared		2	6
+test_declare_amount	a1_4	task4	main	amount =		Test failed, the variable 'amount' was not declared		2	6
+test_declare_client	a1_5	task5	main	name =		Test failed, the variable 'name' was not declared		2	10
+test_declare_address	a1_5	task5	main	address =		Test failed, the variable 'address' was not declared		2	10
+test_declare_orange	a1_5	task5	main	orange =		Test failed, the variable 'orange' was not declared		2	10
+test_declare_white	a1_5	task5	main	white =		Test failed, the variable 'white' was not declared		2	10
+test_declare_hours	a1_5	task5	main	hours =		Test failed, the variable 'hours' was not declared		2	10

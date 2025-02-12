@@ -1,0 +1,3 @@
+test_name	id	class_name	method_name	input	output	param	return	msg_on_success	msg_on_failure	competence	earnable_points	total_points
+test_io	a1_1	task1	main		Hello World						3	3
+test_io	a1_2	task2	main		a = 7;b = 9.2;c = c;d = Hi					a-iter, a-decl	1	5
